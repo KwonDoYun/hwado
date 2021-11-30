@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper-notice">
+
+	<select id="list" resultType="lx.sia.community.vo.NoticeVO">
+		SELECT * FROM notice_board
+	</select>
+	
+	<insert id="insert" parameterType="lx.sia.community.vo.NoticeVO" useGeneratedKeys="true" keyColumn="board_id" keyProperty="boardId">
+       	insert into notice_board(board_title, content, reg_date)
+       	values(#{boardTitle}, #{content}, DATE_ADD(NOW(), INTERVAL 9 HOUR))
+    </insert>
+    
+    <!-- 제목 누르면, 해당 글 조회 -->
+    <select id="showBoardContent" parameterType="int" resultType="lx.sia.community.vo.NoticeVO" >
+    	SELECT * FROM notice_board
+		WHERE board_id=#{boardId}
+    </select>
+    
+   <update id="update">
+   		update notice_board set
+            board_title = #{boardTitle},
+            content = #{content}
+        where board_id = #{boardId}
+   </update>
+    
+    <delete id="delete">
+    	DELETE FROM notice_board
+        WHERE board_id = #{boardId}
+    </delete>
+</mapper>

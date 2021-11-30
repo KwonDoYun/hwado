@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper-Comment">
+
+	<!-- 댓글 갯수 세기 -->
+	<select id="CountComment" resultType="int">
+		select
+		count(*)
+		from comments
+	</select>
+	
+	<select id= "CommentList" parameterType="lx.sia.community.vo.CommentVO" resultType="lx.sia.community.vo.CommentVO">
+		SELECT *
+		FROM comments;
+	</select>
+
+	<insert id="insertComment"
+		parameterType="lx.sia.community.vo.CommentVO" useGeneratedKeys="true"
+		keyColumn="comment_id" keyProperty="commentId">
+		insert into
+		comments(
+		comment_id,
+		comment_content,
+		comment_regdate,
+		user_id,
+		board_id
+		)
+
+		values(
+		#{commentId},
+		#{commentContent},
+		DATE_ADD(NOW(), INTERVAL 9 HOUR),
+		#{userId},
+		#{boardId}
+		)
+	</insert>
+
+	<update id="UpdateComment"
+		parameterType="lx.sia.community.vo.CommentVO" useGeneratedKeys="true"
+		keyColumn="comment_id" keyProperty="commentId">
+		update comments
+		set
+		comment_content = #{commentContent},
+		where comment_id = #{commentId}
+	</update>
+
+	<delete id="DeleteComment" parameterType="int">
+		delete from comments
+		where comment_id = #{commentId}
+	</delete>
+	
+	<select id="getByIdContent" resultType="String">
+		SELECT comment_content
+		FROM comments
+		WHERE comment_id = #{commentId}
+	</select>
+</mapper>

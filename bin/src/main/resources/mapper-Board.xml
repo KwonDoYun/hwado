@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper-Board">
+	<select id="list" parameterType="lx.sia.community.vo.BoardVO" resultType="lx.sia.community.vo.BoardVO">
+		SELECT * 
+		FROM general_board;
+	</select>
+	
+	<insert id="insert" parameterType="lx.sia.community.vo.BoardVO" useGeneratedKeys="true" keyColumn="board_id" keyProperty="boardId">
+        insert into
+        general_board(
+            board_title,
+            board_type,
+            content,
+            attachFile,
+            reg_date,
+            user_id,
+            clicks
+            )
+            
+        	values(
+        	#{boardTitle},
+        	#{boardType},
+            #{content},
+            #{attachFile},
+            DATE_ADD(NOW(), INTERVAL 9 HOUR),
+            #{userId},
+            #{clicks}
+             )
+    </insert>
+    
+    <update id="update" parameterType="lx.sia.community.vo.BoardVO" useGeneratedKeys="true" keyColumn="board_id" keyProperty="boardId">
+        update general_board set
+            board_title = #{boardTitle},
+            content = #{content}
+        where board_id = #{boardId}
+    </update>
+    
+    <update id ="updatereviewcnt">
+    			update general_board set clicks = clicks + 1
+    			where board_id = #{boardId}
+    </update>
+    
+    <delete id="delete" parameterType="int">
+        delete from general_board
+        where board_id = #{boardId}
+    </delete>
+    
+    <!-- 제목 누르면, 해당 글 조회 -->
+    <select id="showBoardContent" resultType="lx.sia.community.vo.BoardVO" >
+    	SELECT * FROM general_board
+		WHERE board_id=#{boardId}
+    </select>
+    
+    <!-- 제목 누르면, 해당 글 작성자 닉네임 얻기 -->
+    <select id="getBoardWriteUserNickname" resultType="String">
+    	SELECT  u.nickname
+		FROM users u
+		JOIN general_board g ON u.user_id = g.user_id
+		WHERE board_id = #{boardId}
+    </select>
+    
+    
+    <!-- 제목 누르면, 해당 글 작성자 닉네임 얻기 -->
+    <select id="getUserNickname" resultType="String">
+    	SELECT nickname
+		FROM users
+		WHERE user_id = #{userId}
+    </select>   	
+    
+</mapper>
